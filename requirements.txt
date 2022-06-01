@@ -1,6 +1,11 @@
-pandas
-sklearn
+black
 matplotlib
+nibabel
 notebook
-torch
+pandas
+pytest
+pytest-cov
+pylint
 seaborn
+sklearn
+torch
