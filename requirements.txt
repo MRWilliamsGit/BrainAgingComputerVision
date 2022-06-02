@@ -3,9 +3,10 @@ matplotlib
 nibabel
 notebook
 pandas
+pydicom
 pytest
 pytest-cov
 pylint
 seaborn
 sklearn
-torch
+#torch
