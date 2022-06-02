@@ -1,10 +1,9 @@
 #Maria Williams
-#6/1/22: loading and manipulating nifti files
-#This was a helpful resource: https://lukas-snoek.com/NI-edu/fMRI-introduction/week_1/python_for_mri.html
+#6/1/22: loading and manipulating dcm files
 
-!pip install nibabel
-import nibabel as nib
+import pydicom as dicom
+import matplotlib.pylab as plt
 
-imgfile = nib.load('ds107_sub001_highres.nii')
-img = img.get_data()
-print(img.shape)
+img = dicom.dcmread('testimg.dcm')
+plt.imshow(img.pixel_array, cmap=plt.cm.bone)
+plt.savefig('testimg')
