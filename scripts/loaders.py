@@ -10,7 +10,7 @@ import random
 import numpy as np
 import tensorflow as tf
 from PIL import Image
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 #for metadata
 import pandas as pd
 #for data file structure
@@ -19,9 +19,9 @@ import shutil
 
 #for modeling
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
+#import torch.nn as nn
+#import torch.nn.functional as F
+#import torch.optim as optim
 import torchvision
 from torchvision import datasets, transforms
 from torchvision.datasets import ImageFolder
@@ -30,7 +30,7 @@ from torch.utils.data import Subset, DataLoader, Dataset
 from sklearn.model_selection import train_test_split
 from torchsummary import summary
 #for metrics
-from sklearn.metrics import mean_squared_error
+#from sklearn.metrics import mean_squared_error
 
 #define class for the regression images
 class BrainBits(Dataset):
@@ -67,20 +67,21 @@ class BrainBits(Dataset):
 #must pass path to folder that contains image_data.zip and cn_age_df.csv
 def RegressionLoaders(where_stuff):
     #get image metadata
-    csvin= os.path.join(where_stuff, 'cn_age_df.csv')
-    data = pd.read_csv('csvin')
+    csvin = os.path.join(where_stuff, 'cn_age_df.csv')
+    data = pd.read_csv(csvin)
 
-    #get images - will unzip in working directory
+    #get images - will unzip in same folder
     imin= os.path.join(where_stuff, 'image_data.zip')
-    zip = zipfile.ZipFile(imin)
-    zip.extractall()
-    zip.close()
+    imout= os.path.join(where_stuff, 'image_data')
+    print(imin)
+    with zipfile.ZipFile(imin, 'r') as zipObj:
+        zipObj.extractall()
 
     #divide files into training and test sets, ratio: 90/10
     #note: this does not ensure that classes are equivalently represented
 
     #step 1: make a list of the image files
-    flist = os.listdir('image_data')
+    flist = os.listdir(imout)
     #step 2: shuffle
     random.shuffle(flist)
     #step 3: make two lists of train and val images
@@ -123,13 +124,12 @@ def RegressionLoaders(where_stuff):
 def ClassLoaders(where_stuff, imslice=85):
     #get image metadata
     csvin= os.path.join(where_stuff, 'cn_age_df.csv')
-    data = pd.read_csv('csvin')
+    data = pd.read_csv(csvin)
 
     #get images - will unzip in working directory
     imin= os.path.join(where_stuff, 'image_data.zip')
-    zip = zipfile.ZipFile(imin)
-    zip.extractall()
-    zip.close()
+    with zipfile.ZipFile(imin, 'r') as zipObj:
+        zipObj.extractall()
 
     #establish the file structure required for the dataloaders
     folders = ['50','60','70','80','90']
@@ -195,3 +195,7 @@ def ClassLoaders(where_stuff, imslice=85):
     class_to_idx = {v:k for k,v in idx_to_class.items()}
 
     return Train_loader, Val_loader
+    
+#make sure work
+#print(os.getcwd())
+T, V = RegressionLoaders('/home/ec2-user/environment/BrainAgingComputerVision/data')

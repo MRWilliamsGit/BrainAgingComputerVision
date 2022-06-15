@@ -2,6 +2,7 @@ black
 matplotlib
 nibabel
 notebook
+numpy
 pandas
 pillow
 pydicom
@@ -11,4 +12,7 @@ pylint
 seaborn
 sklearn
 split-folders
-#torch
+tensorflow
+torch
+torchsummary
+torchvision
