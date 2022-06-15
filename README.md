@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="https://github.com/MRWilliamsGit/BrainAgingComputerVision/blob/main/title.png" />
+  <img src="https://github.com/MRWilliamsGit/BrainAgingComputerVision/blob/main/title.png" 
+       width= 443
+       height= 175 />
 </p>
 
 # Assessing Brain Age with Computer Vision
