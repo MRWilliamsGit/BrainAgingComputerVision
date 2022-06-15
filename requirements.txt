@@ -3,10 +3,12 @@ matplotlib
 nibabel
 notebook
 pandas
+pillow
 pydicom
 pytest
 pytest-cov
 pylint
 seaborn
 sklearn
+split-folders
 #torch
