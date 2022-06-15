@@ -73,9 +73,8 @@ def RegressionLoaders(where_stuff):
     #get images - will unzip in same folder
     imin= os.path.join(where_stuff, 'image_data.zip')
     imout= os.path.join(where_stuff, 'image_data')
-    print(imin)
     with zipfile.ZipFile(imin, 'r') as zipObj:
-        zipObj.extractall()
+        zipObj.extractall(imout)
 
     #divide files into training and test sets, ratio: 90/10
     #note: this does not ensure that classes are equivalently represented
@@ -88,18 +87,18 @@ def RegressionLoaders(where_stuff):
     tlen = round(len(flist)*.9)
     tlist = flist[0:tlen]
     vlist = flist[tlen:len(flist)]
-    #step 4: make directories in working environment
-    os.mkdir('train')
-    os.mkdir('val')
+    #step 4: make directories
+    os.mkdir(os.path.join(where_stuff, 'train'))
+    os.mkdir(os.path.join(where_stuff, 'val'))
 
     #step 5: sort the images as train and val
     for f in tlist:
-        imgpl1 = "image_data/" + f
-        imgpl2 = "train/" + f
+        imgpl1 = os.path.join(where_stuff, 'image_data', f)
+        imgpl2 = os.path.join(where_stuff, 'train', f)
         os.rename(imgpl1, imgpl2)
     for f in vlist:
-        imgpl1 = "image_data/" + f
-        imgpl2 = "val/" + f
+        imgpl1 = os.path.join(where_stuff, 'image_data', f)
+        imgpl2 = os.path.join(where_stuff, 'val', f)
         os.rename(imgpl1, imgpl2)
 
     #define transformation - same for both train and val
@@ -109,8 +108,8 @@ def RegressionLoaders(where_stuff):
                                          transforms.Normalize(mean=[0.5],std=[0.5])])
 
     #get data
-    train_data = BrainBits(img_path='train/', label_file=data, transform=data_transform)
-    test_data = BrainBits(img_path='val/', label_file=data, transform=data_transform)
+    train_data = BrainBits(img_path=os.path.join(where_stuff, 'train'), label_file=data, transform=data_transform)
+    test_data = BrainBits(img_path=os.path.join(where_stuff, 'val'), label_file=data, transform=data_transform)
 
     #make loaders
     batch_size = 32
@@ -123,55 +122,64 @@ def RegressionLoaders(where_stuff):
 #must pass the slice number you want (default 85)
 def ClassLoaders(where_stuff, imslice=85):
     #get image metadata
-    csvin= os.path.join(where_stuff, 'cn_age_df.csv')
+    csvin = os.path.join(where_stuff, 'cn_age_df.csv')
     data = pd.read_csv(csvin)
 
-    #get images - will unzip in working directory
+    #get images - will unzip in same folder
     imin= os.path.join(where_stuff, 'image_data.zip')
+    imout= os.path.join(where_stuff, 'image_data')
     with zipfile.ZipFile(imin, 'r') as zipObj:
-        zipObj.extractall()
-
+        zipObj.extractall(imout)
+        
     #establish the file structure required for the dataloaders
     folders = ['50','60','70','80','90']
-    os.mkdir("/data/")
+    dfolder = os.path.join(where_stuff, 'data')
+    os.mkdir(dfolder)
     for i in folders:
-        base = 'data'
-        path = os.path.join(base, i,)
+        path = os.path.join(dfolder, i,)
         os.mkdir(path)
 
     #for each image: pull out image slice, convert to jpeg, then move to class (age) folder
     #note: conversion to jpeg lets us use the datasets.Imageloader
     #note: images will be converted to tensors during transform since loaders can't process images
-    for i in range(len(data)):
+    flist = os.listdir(imout)
+    for m in flist:
+        im = m.split(".")[0]
+        imgpl1 = imout+"/"+im+'.npy'
+        imgjpl = imout+"/"+im+'.jpg'
+    
+    #full data version
+    #for i in range(len(data)):
         #first load the image, pull out a slice and convert it to jpeg
-        imgpl1 = "/image_data/" + data.loc[i][0] + '.npy'
-        imgjpl = "/image_data/" + data.loc[i][0] + '.jpg'
+        #imgpl1 = imout + "/" + data.loc[i][0] + '.npy'
+        #imgjpl = imout + "/" + data.loc[i][0] + '.jpg'
         image3D = np.load(imgpl1)
-        im = Image.fromarray((image3D[imslice] * 255).astype(np.uint8))
-        im.save(imgjpl)
+        this = Image.fromarray((image3D[imslice] * 255).astype(np.uint8))
+        this.save(imgjpl)
 
         #then loop through to determine which folder it belongs to
+        age = data.loc(data[0]==im)[5]
         for f in folders:
-            if data.loc[i][5] < int(f):
+            if age < int(f):
                 #if less than the folder name, move to the folder before f
-                imgpl2 = "/data/" + str(int(f)-10) + "/" + data.loc[i][0] + '.jpg'
+                imgpl2 = dfolder + "/" + str(int(f)-10) + "/" + im + '.jpg'
                 os.rename(imgjpl, imgpl2)
                 break
-            elif data.loc[i][5] >= 90:
-                imgpl2 = "/data/90/" + data.loc[i][0] + '.jpg'
+            elif age >= 90:
+                imgpl2 = dfolder + "/90/" + im + '.jpg'
                 os.rename(imgjpl, imgpl2)
                 break
 
     #since there are only 7 in the 50-60 decade, discard that folder and update folders list
-    shutil.rmtree("/data/50")
+    shutil.rmtree(dfolder+"/50")
     folders = ['60','70','80','90']
 
     #training/test split ratio: 90/10
-    splitfolders.ratio('/data', output='/data', ratio=(.9, 0.1))
+    splitfolders.ratio(dfolder, output=dfolder, ratio=(.9, 0.1))
 
     #get datasets
-    Tdataset = datasets.ImageFolder('/data/train/')
-    Vdataset = datasets.ImageFolder('/data/val/')
+    Tdataset = datasets.ImageFolder(dfolder+'/train/')
+    Vdataset = datasets.ImageFolder(dfolder+'/val/')
 
     #define transformation - same for both train and val
     data_transform = transforms.Compose([ transforms.Resize((224, 224)),
@@ -180,8 +188,8 @@ def ClassLoaders(where_stuff, imslice=85):
                                             transforms.Normalize(mean=[0.5],std=[0.5])])
 
     #get datasets with transformation
-    Tdataset = datasets.ImageFolder('/data/train/', transform=data_transform)
-    Vdataset = datasets.ImageFolder('/data/val/', transform=data_transform)
+    Tdataset = datasets.ImageFolder(dfolder+'/train/', transform=data_transform)
+    Vdataset = datasets.ImageFolder(dfolder+'/val/', transform=data_transform)
 
     #add to loaders (batch size of 36 would be square root of dataset)
     batch_size = 30
@@ -198,4 +206,4 @@ def ClassLoaders(where_stuff, imslice=85):
     
 #make sure work
 #print(os.getcwd())
-T, V = RegressionLoaders('/home/ec2-user/environment/BrainAgingComputerVision/data')
+T, V = ClassLoaders('/home/ec2-user/environment/BrainAgingComputerVision/data')
