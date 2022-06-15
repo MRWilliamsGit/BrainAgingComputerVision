@@ -5,6 +5,7 @@
 #imports
 import os
 #for image processing
+import zipfile
 import random
 import numpy as np
 import tensorflow as tf
@@ -71,7 +72,9 @@ def RegressionLoaders(where_stuff):
 
     #get images - will unzip in working directory
     imin= os.path.join(where_stuff, 'image_data.zip')
-    !unzip imin > /dev/null
+    zip = zipfile.ZipFile(imin)
+    zip.extractall()
+    zip.close()
 
     #divide files into training and test sets, ratio: 90/10
     #note: this does not ensure that classes are equivalently represented
@@ -124,7 +127,9 @@ def ClassLoaders(where_stuff, imslice=85):
 
     #get images - will unzip in working directory
     imin= os.path.join(where_stuff, 'image_data.zip')
-    !unzip imin > /dev/null
+    zip = zipfile.ZipFile(imin)
+    zip.extractall()
+    zip.close()
 
     #establish the file structure required for the dataloaders
     folders = ['50','60','70','80','90']

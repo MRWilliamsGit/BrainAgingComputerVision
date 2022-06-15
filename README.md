@@ -18,5 +18,7 @@ We used 1267 congnitively normal files from the ADNI MRI dataset. These were bla
 
 ## Conclusions
 
-## How to run
+## Demo:
+
+Please open main.ipynb in Google Colab to interact with the model.
 
