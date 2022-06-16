@@ -1,5 +1,5 @@
 #Maria Williams
-#Last Modified: 6/15/22
+#Last Modified: 6/16/22
 #Regression training script
 
 #imports
@@ -84,7 +84,8 @@ def MakeModel():
 
     return regmodel
 
-def MakeAndTrain(Train_loader, device):
+#runs everything, optional variable for if want to save model
+def MakeAndTrain(Train_loader, device, where=""):
     
     #make loaders, model, optimizer
     model = MakeModel()
@@ -99,5 +100,7 @@ def MakeAndTrain(Train_loader, device):
                             device = device)
     
     # Save the entire model
-    #torch.save(model, "/home/ec2-user/environment/BrainAgingComputerVision/models/model2.pt")
-    return model
+    if (where!=''):
+        torch.save(model, where)
+        
+    return model, cost_path
