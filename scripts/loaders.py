@@ -21,7 +21,7 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import Compose, ToTensor, Resize
 from torch.utils.data import Subset, DataLoader, Dataset
 
-#define class for the regression images: need slice number
+#define class for the regression images
 class BrainBits(Dataset):
   #receives the folder of images, the csv file of data, and the transform
   def __init__(self, img_path, label_file, transform):

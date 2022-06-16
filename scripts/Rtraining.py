@@ -104,6 +104,4 @@ def main():
     
     # Save the entire model
     #torch.save(model, "/home/ec2-user/environment/BrainAgingComputerVision/models/model2.pt")
-    return
-
-main()
+    return model
