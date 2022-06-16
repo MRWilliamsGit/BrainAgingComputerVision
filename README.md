@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/MRWilliamsGit/BrainAgingComputerVision/blob/images/title.png" 
+  <img src="https://github.com/MRWilliamsGit/BrainAgingComputerVision/images/blob/title.png" 
        width= 443
        height= 175 />
 </p>
@@ -19,6 +19,7 @@ A sub-sample of ten has been included in the data directory of this repository.
 The base model used was the pre-trained resnet18 model. Its weights were retained, but its first layer was adapted to handle our inputs and its last layer was trained on our data to produce regression outputs.
 
 ## Conclusions
+
 
 ## Demo
 
