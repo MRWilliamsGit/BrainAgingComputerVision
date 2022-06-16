@@ -104,3 +104,18 @@ def RegressionLoaders(where_stuff):
     test_loader = torch.utils.data.DataLoader(test_data, batch_size, shuffle=True)
 
     return train_loader, test_loader
+    
+def SingleLoader(img):
+  
+  image = Image.fromarray((img * 255).astype(np.uint8))
+
+  #define transformation - same for both train and val
+  data_transform = transforms.Compose([ transforms.Resize((224, 224)),
+                                        transforms.Grayscale(),
+                                        transforms.ToTensor(),
+                                        transforms.Normalize(mean=[0.5],std=[0.5])])
+
+  image = data_transform(image)
+  image = image.unsqueeze(0)
+
+  return image

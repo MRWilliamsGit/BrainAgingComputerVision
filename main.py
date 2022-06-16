@@ -3,7 +3,7 @@
 #All Together (in Cloud9 dev env)
 
 #scripts from repo
-from scripts.loaders import RegressionLoaders
+from scripts.loaders import RegressionLoaders, SingleLoader
 from scripts.Rtraining import MakeAndTrain
 from scripts.Rpredicting import BatchPredict, SinglePredict
 
@@ -11,23 +11,27 @@ from scripts.Rpredicting import BatchPredict, SinglePredict
 import torch
 import shutil
 import os
+import numpy as np
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 where = '/home/ec2-user/environment/BrainAgingComputerVision/data'
 
-T, V = RegressionLoaders(where)
+#T, V = RegressionLoaders(where)
 print("Loading Complete")
 
-model = MakeAndTrain(T, device)
+#model = MakeAndTrain(T, device)
 print("Model Trained")
 
-preds = BatchPredict(model, V, device)
+#preds = BatchPredict(model, V, device)
 print("Batch Prediction Complete")
 
-pred = SinglePredict(model, img, device)
+model2 = torch.load('/home/ec2-user/environment/BrainAgingComputerVision/models/model.pt')
+img = np.load('/home/ec2-user/environment/BrainAgingComputerVision/data/example0.npy')
+image = SingleLoader(img)
+pred = SinglePredict(model2, image, device)
 print("Pred: "+str(pred))
 
 #delete folders afterwards
-shutil.rmtree(os.path.join(where, 'train'))
-shutil.rmtree(os.path.join(where, 'val'))
-shutil.rmtree(os.path.join(where, 'image_data'))
+#shutil.rmtree(os.path.join(where, 'train'))
+#shutil.rmtree(os.path.join(where, 'val'))
+#shutil.rmtree(os.path.join(where, 'image_data'))
