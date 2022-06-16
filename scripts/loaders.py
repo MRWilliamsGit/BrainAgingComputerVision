@@ -1,11 +1,10 @@
 #Maria Williams
-#Last Modified: 6/15/22
+#Last Modified: 6/16/22
 
 #imports
 import os
 import shutil
 
-#for data processing
 import numpy as np
 import pandas as pd
 import random
@@ -13,7 +12,6 @@ import tensorflow as tf
 import zipfile
 from PIL import Image
 
-#for modeling
 import torch
 import torchvision
 from torchvision import datasets, transforms

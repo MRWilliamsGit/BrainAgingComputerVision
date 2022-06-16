@@ -22,9 +22,6 @@ import torch.optim as optim
 import torchvision
 from sklearn.metrics import mean_squared_error
 
-#set device
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
 #train function
 def train_model(model,criterion,optimizer,loader,n_epochs,device):
     
@@ -87,10 +84,9 @@ def MakeModel():
 
     return regmodel
 
-def MakeAndTrain(where_data, device):
+def MakeAndTrain(Train_loader, device):
     
     #make loaders, model, optimizer
-    Train_loader, Val_loader = loaders.RegressionLoaders(where_data)
     model = MakeModel()
     optimizer = optim.SGD(model.parameters(), lr=0.001)
 
