@@ -87,10 +87,10 @@ def MakeModel():
 
     return regmodel
 
-def main():
+def MakeAndTrain(where_data, device):
     
     #make loaders, model, optimizer
-    Train_loader, Val_loader = loaders.RegressionLoaders('/home/ec2-user/environment/BrainAgingComputerVision/data')
+    Train_loader, Val_loader = loaders.RegressionLoaders(where_data)
     model = MakeModel()
     optimizer = optim.SGD(model.parameters(), lr=0.001)
 
@@ -100,7 +100,7 @@ def main():
                             optimizer = optimizer,
                             loader = Train_loader,
                             n_epochs = 25,
-                            device = torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+                            device = device)
     
     # Save the entire model
     #torch.save(model, "/home/ec2-user/environment/BrainAgingComputerVision/models/model2.pt")
