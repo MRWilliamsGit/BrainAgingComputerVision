@@ -7,7 +7,7 @@ import os
 import shutil
 
 #for data processing
-import loaders
+import scripts.loaders
 import numpy as np
 import tensorflow as tf
 from PIL import Image
