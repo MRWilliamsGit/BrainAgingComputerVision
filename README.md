@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/MRWilliamsGit/BrainAgingComputerVision/blob/main/title.png" 
+  <img src="https://github.com/MRWilliamsGit/BrainAgingComputerVision/blob/images/title.png" 
        width= 443
        height= 175 />
 </p>

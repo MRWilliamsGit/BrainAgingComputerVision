@@ -23,4 +23,10 @@ def BatchPredict(model,dataloader,device):
 
 def SinglePredict(model,img,device):
     model = model.to(device) # Send model to GPU if available
+    with torch.no_grad():
+        model.eval()
+        # Get predictions
+        pred = model(img)
+        pred = np.around(pred, decimals=1)
+    
     return pred
