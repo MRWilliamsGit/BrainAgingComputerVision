@@ -16,7 +16,7 @@ import numpy as np
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 where = '/home/ec2-user/environment/BrainAgingComputerVision'
 
-T, V = RegressionLoaders(os.path.join(where, 'data'))
+T, V = RegressionLoaders(os.path.join(where, 'sampl_data'))
 print("Loading Complete")
 
 model, T_cost_path, V_cost_path = MakeAndTrain(T, V, device)
@@ -33,6 +33,6 @@ print("Batch Prediction Complete")
 #print("Pred: "+str(pred))
 
 #delete folders afterwards
-shutil.rmtree(os.path.join(where, 'data/train'))
-shutil.rmtree(os.path.join(where, 'data/val'))
-shutil.rmtree(os.path.join(where, 'data/image_data'))
+shutil.rmtree(os.path.join(where, 'sampl_data/train'))
+shutil.rmtree(os.path.join(where, 'sampl_data/val'))
+shutil.rmtree(os.path.join(where, 'sample_data/image_data'))

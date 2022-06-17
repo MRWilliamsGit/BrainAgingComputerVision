@@ -12,7 +12,7 @@ This project uses transfer learning to train a ResNet18 model to identify the ag
 
 We used 1267 congnitively normal files from the ADNI MRI dataset. These were black and white 3D images, stored in 3D numpy arrays that had already been cleaned and pre-processed. 
 
-A sub-sample of ten has been included in the data directory of this repository.
+A sub-sample of ten has been included in the sample_data directory of this repository.
 
 ## Modeling
 
