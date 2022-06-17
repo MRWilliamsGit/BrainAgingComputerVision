@@ -50,6 +50,7 @@ def train_model(model,criterion,optimizer,loader,vloader,n_epochs,device):
     
     #prep
     loss_over_time = [] # to track the loss as the network trains
+    V_loss_over_time = [] # to track the loss as the network trains
     model = model.to(device) # Send model to GPU if available
     model.train() # Set the model to training mode
     
@@ -105,8 +106,9 @@ def train_model(model,criterion,optimizer,loader,vloader,n_epochs,device):
         
         last_loss = current_loss
         loss_over_time.append(epoch_loss)
+        V_loss_over_time.append(current_loss)
 
-    return loss_over_time
+    return loss_over_time, V_loss_over_time
 
 def MakeModel():
     # Load a resnet18 pre-trained model
@@ -135,16 +137,16 @@ def MakeAndTrain(Train_loader, Val_loader, device, where=""):
     optimizer = optim.SGD(model.parameters(), lr=0.001)
 
     #train model
-    cost_path = train_model(model = model,
-                            criterion = nn.MSELoss(),
-                            optimizer = optimizer,
-                            loader = Train_loader,
-                            vloader = Val_loader,
-                            n_epochs = 25,
-                            device = device)
+    T_cost_path, V_cost_path = train_model(model = model,
+                                criterion = nn.MSELoss(),
+                                optimizer = optimizer,
+                                loader = Train_loader,
+                                vloader = Val_loader,
+                                n_epochs = 25,
+                                device = device)
     
     # Save the entire model
     if (where!=''):
         torch.save(model, where)
         
-    return model, cost_path
+    return model, T_cost_path, V_cost_path

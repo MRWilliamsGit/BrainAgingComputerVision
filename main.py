@@ -19,7 +19,7 @@ where = '/home/ec2-user/environment/BrainAgingComputerVision'
 T, V = RegressionLoaders(os.path.join(where, 'data'))
 print("Loading Complete")
 
-model, cost_path = MakeAndTrain(T, V, device)
+model, T_cost_path, V_cost_path = MakeAndTrain(T, V, device)
 print("Model Trained")
 
 preds = BatchPredict(model, V, device)
