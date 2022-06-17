@@ -16,3 +16,4 @@ tensorflow
 torch
 torchsummary
 torchvision
+zipfile-deflate64
