@@ -26,7 +26,9 @@ def SinglePredict(model,img,device):
     with torch.no_grad():
         model.eval()
         # Get predictions
+        img = img.to(device)
         pred = model(img)
+        pred = np.squeeze(pred.cpu().numpy())
         pred = np.around(pred, decimals=1)
     
     return pred
