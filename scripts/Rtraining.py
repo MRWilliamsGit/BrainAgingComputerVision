@@ -21,13 +21,39 @@ import torch.optim as optim
 import torchvision
 from sklearn.metrics import mean_squared_error
 
-#train function
-def train_model(model,criterion,optimizer,loader,n_epochs,device):
+#validation function for early stopping
+def validation(model, device, loader, loss_function):
+
+    model.eval()
+    loss_total = 0
     
+    with torch.no_grad():
+        # Get a batch of validation images
+        images, labels = iter(loader).next()
+        images, labels = images.to(device), labels.to(device)
+        # Get predictions
+        preds = model(images)
+        
+        loss = loss_function(preds, labels)
+        loss_total += loss.item()
+
+    return loss_total / len(loader)
+
+#train function
+#includes early stopping: if validation loss increases twice in a row, training will stop
+def train_model(model,criterion,optimizer,loader,vloader,n_epochs,device):
+    
+    # Early stopping
+    last_loss = 100
+    patience = 2
+    trigger_times = 0
+    
+    #prep
     loss_over_time = [] # to track the loss as the network trains
     model = model.to(device) # Send model to GPU if available
     model.train() # Set the model to training mode
     
+    #train
     for epoch in range(n_epochs):  # loop over the dataset multiple times
         
         running_loss = 0.0
@@ -56,10 +82,28 @@ def train_model(model,criterion,optimizer,loader,n_epochs,device):
             # Collect loss
             running_loss += loss.item()
             
-        # Calculate and display average loss for the epoch
+        # Calculate and display the losses for each epoch
         epoch_loss = running_loss / len(loader)
-        print('Loss: {:4f}'.format(epoch_loss))
+        current_loss = validation(model, device, vloader, criterion)
+        print('Training Loss: {:4f}, Validation Loss: {:4f}'.format(epoch_loss, current_loss))
 
+        
+        #track
+    
+        if current_loss > last_loss:
+            trigger_times += 1
+            print('Loss Increase Count:', trigger_times)
+    
+            if trigger_times >= patience:
+                print('Loss Increase Count:', trigger_times)
+                print('Early stopping!')
+                return model
+    
+        else:
+            #print('trigger times: 0')
+            trigger_times = 0
+        
+        last_loss = current_loss
         loss_over_time.append(epoch_loss)
 
     return loss_over_time
@@ -84,7 +128,7 @@ def MakeModel():
     return regmodel
 
 #runs everything, optional variable for if want to save model
-def MakeAndTrain(Train_loader, device, where=""):
+def MakeAndTrain(Train_loader, Val_loader, device, where=""):
     
     #make loaders, model, optimizer
     model = MakeModel()
@@ -95,6 +139,7 @@ def MakeAndTrain(Train_loader, device, where=""):
                             criterion = nn.MSELoss(),
                             optimizer = optimizer,
                             loader = Train_loader,
+                            vloader = Val_loader,
                             n_epochs = 25,
                             device = device)
     

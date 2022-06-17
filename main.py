@@ -19,18 +19,18 @@ where = '/home/ec2-user/environment/BrainAgingComputerVision'
 T, V = RegressionLoaders(os.path.join(where, 'data'))
 print("Loading Complete")
 
-model, cost_path = MakeAndTrain(T, device)
+model, cost_path = MakeAndTrain(T, V, device)
 print("Model Trained")
 
 preds = BatchPredict(model, V, device)
 print("Batch Prediction Complete")
 
-model2 = torch.load(os.path.join(where, 'models/model.pt'))
-img = np.load(os.path.join(where, 'data/example0.npy'))
+#model2 = torch.load(os.path.join(where, 'models/model.pt'))
+#img = np.load(os.path.join(where, 'data/example0.npy'))
 
-image = SingleLoader(img)
-pred = SinglePredict(model2, image, device)
-print("Pred: "+str(pred))
+#image = SingleLoader(img)
+#pred = SinglePredict(model2, image, device)
+#print("Pred: "+str(pred))
 
 #delete folders afterwards
 shutil.rmtree(os.path.join(where, 'data/train'))
