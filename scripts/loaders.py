@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import random
 import tensorflow as tf
-import zipfile
+import zipfile_deflate64 as zipfile
 from PIL import Image
 
 import torch
